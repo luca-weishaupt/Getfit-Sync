@@ -1,3 +1,9 @@
+# Getfit Sync Chrome Extension
+
+This Chrome extension allows you to sync your Strava activities with your getfit account. It's a simple, lightweight tool that streamlines your fitness tracking and makes it easier to keep all your data in one place.
+
+# Installation Guide
+
 ### 1. **Download & Unzip the Extension**
 
 - **Download** the extension file and **unzip** it anywhere on your local drive. 📥🔓
