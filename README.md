@@ -6,7 +6,22 @@ This Chrome extension allows you to sync your Strava activities with your getfit
 
 ### 1. **Download & Unzip the Extension**
 
-- **Download** the extension file and **unzip** it anywhere on your local drive. 📥🔓
+You have two options:
+
+1. **Clone the Repository:**
+
+    Open your terminal and run the following command:
+    ```
+    git clone https://github.com/luca-weishaupt/Getfit-Sync.git
+    ```
+    This will download the repository content into a folder named `Getfit-Sync`.
+
+2. OR **Download as a ZIP File:**
+
+    - Visit [https://github.com/luca-weishaupt/Getfit-Sync](https://github.com/luca-weishaupt/Getfit-Sync).
+    - Click on the **Code** button.
+    - Select **"Download ZIP"**.
+    - Once downloaded, unzip the file to your desired location on your local drive.
 
 ---
 
