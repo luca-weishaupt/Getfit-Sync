@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Getfit Sync Options</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* Reset and base styles */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #e0f7fa, #80deea);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        /* Card container */
+        .card {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            width: 600px; /* Increased width */
+            padding: 40px;
+        }
+        /* Header */
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #004d40;
+            font-size: 1.8rem;
+        }
+        /* Form styles */
+        .form-group {
+            margin-bottom: 18px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            color: #00796b;
+            font-weight: 500;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 10px 14px;
+            font-size: 1rem;
+            border: 1px solid #b2dfdb;
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .form-group input:focus {
+            border-color: #00796b;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        /* Read-only fields styling */
+        .form-group input[readonly] {
+            background: #f1f1f1;
+            color: #555;
+        }
+        /* Current config display */
+        #currentConfig {
+            font-family: monospace;
+            background: #e0f2f1;
+            border: 1px solid #80cbc4;
+            padding: 12px;
+            border-radius: 6px;
+            white-space: pre-wrap;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            color: #004d40;
+        }
+        /* Save Button */
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(45deg, #00796b, #004d40);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(45deg, #005a50, #003d33);
+        }
+        /* Status message */
+        #status {
+            margin-top: 15px;
+            background: #e0f2f1;
+            border-left: 4px solid #00796b;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            color: #004d40;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <h2>Configure Getfit Sync</h2>
+        <div id="currentConfig">
+            <!-- Current configuration details will be shown here -->
+        </div>
+        <div class="form-group">
+            <label for="clientId">Strava Client ID</label>
+            <input type="text" id="clientId" placeholder="Enter your Strava Client ID">
+        </div>
+        <div class="form-group">
+            <label for="clientSecret">Strava Client Secret</label>
+            <input type="text" id="clientSecret" placeholder="Enter your Strava Client Secret">
+        </div>
+        <div class="form-group">
+            <label for="redirectUri">Strava Redirect URI</label>
+            <input type="text" id="redirectUri" readonly>
+        </div>
+        <div class="form-group">
+            <label for="redirectDomain">Authorization Callback Domain</label>
+            <input type="text" id="redirectDomain" readonly>
+        </div>
+        <button id="saveButton">Save Configuration</button>
+        <div id="status"></div>
+    </div>
+    <script src="options.js"></script>
+</body>
+
+</html>
