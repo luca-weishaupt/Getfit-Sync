@@ -54,13 +54,36 @@
             font-size: 1rem;
             white-space: pre-wrap;
         }
+        .help-icon {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            font-size: 1rem;
+            color: #00796b;
+            cursor: pointer;
+        }
+        .help-message {
+            display: none;
+            font-size: 0.9rem;
+            color: #555;
+            margin-top: 12px;
+            background: #e9ecef;
+            padding: 8px;
+            border-radius: 4px;
+        }
     </style>
 </head>
 
 <body>
-    <h2>Getfit Sync</h2>
-    <button id="syncButton">Sync Now</button>
-    <div id="status">Idle.</div>
+    <div class="card">
+        <h2>Getfit Sync</h2>
+        <button id="syncButton">Sync Now</button>
+        <div id="status">Idle.</div>
+        <span id="helpIcon" class="help-icon">&#9432;</span>
+        <div id="helpMessage" class="help-message">
+            <strong>Help:</strong> Make sure your Strava credentials are configured in Options.
+        </div>
+    </div>
     <script src="popup.js"></script>
 </body>
 

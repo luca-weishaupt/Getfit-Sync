@@ -18,3 +18,9 @@ document.getElementById("syncButton").addEventListener("click", () => {
         });
     });
 });
+
+// Toggle help message in popup
+document.getElementById("helpIcon").addEventListener("click", () => {
+    const helpMessage = document.getElementById("helpMessage");
+    helpMessage.style.display = (helpMessage.style.display === "block") ? "none" : "block";
+});

@@ -130,7 +130,7 @@ async function getUserParametersFromGetfit() {
     throw new Error("Getfit user parameters not found in API response.");
 }
 
-async function fetchStravaActivities(tokenData) {
+async function fetchStravaActivities(tokenData, syncType) {
     const token = tokenData.access_token;
     const todayUtc = luxon.DateTime.utc();
     const mostRecentMonday = todayUtc.minus({ days: todayUtc.weekday - 1 }).startOf("day");
@@ -141,7 +141,6 @@ async function fetchStravaActivities(tokenData) {
     });
     if (!response.ok) {
         if (response.status === 401) {
-            // Improved error message for unauthorized responses
             throw new Error('Unauthorized: The Strava token may be invalid or expired. Please check your configuration.');
         }
         throw new Error('Failed to fetch Strava activities: ' + response.status);
@@ -151,13 +150,17 @@ async function fetchStravaActivities(tokenData) {
         let dtUtc = luxon.DateTime.fromISO(act.start_date, { zone: "utc" });
         let dtEastern = dtUtc.setZone("America/New_York").startOf("day");
         let dtUtcFloor = dtEastern.setZone("utc");
+        const originalMovingMinutes = Math.round(act.moving_time / 60);
+        const computedDuration = (syncType === "total")
+            ? Math.round(act.elapsed_time / 60)
+            : originalMovingMinutes;
         return {
             id: String(act.id),
             activity_name: act.name,
             activity_type: String(act.type),
             start_date: dtUtcFloor.toISO(),
-            moving_time: act.moving_time,
-            duration_minutes: Math.round(act.moving_time / 60)
+            duration_minutes: computedDuration,
+            original_moving_minutes: originalMovingMinutes
         };
     });
 }
@@ -223,7 +226,6 @@ async function submitActivityToGetfit(payload) {
 async function syncActivities() {
     console.log("Starting sync in background...");
     startKeepAlive();
-
     try {
         let tokenData = await getStoredToken();
         if (!tokenData) {
@@ -231,14 +233,16 @@ async function syncActivities() {
             tokenData = await authenticateStrava();
         }
         console.log("Using Strava token:", tokenData.access_token);
+        const config = await getConfig();
+        const syncType = config.syncType || "moving";
         let activities;
         try {
-            activities = await fetchStravaActivities(tokenData);
+            activities = await fetchStravaActivities(tokenData, syncType);
         } catch (e) {
             if (e.message.includes("Unauthorized")) {
                 console.warn("Token expired, triggering re-authentication.");
                 tokenData = await authenticateStrava();
-                activities = await fetchStravaActivities(tokenData);
+                activities = await fetchStravaActivities(tokenData, syncType);
             } else {
                 throw e;
             }
@@ -246,6 +250,7 @@ async function syncActivities() {
         console.log(`Fetched ${activities.length} activities from Strava.`);
         const duplicateSet = await fetchUploadedFromGetfit();
         console.log("Already uploaded keys:", duplicateSet);
+        // Use computed duration in key checking.
         const newActivities = activities.filter(act => {
             const key = `${String(Math.floor(luxon.DateTime.fromISO(act.start_date, { zone: "utc" }).toSeconds()))}|${cleanActivityType(act.activity_type)}|${act.duration_minutes}`;
             if (duplicateSet.has(key)) {
@@ -262,6 +267,7 @@ async function syncActivities() {
             if (resp.ok) {
                 const result = await resp.json();
                 console.log(`Activity ${act.id} uploaded successfully.`, result);
+                // Update duplicate set using the computed duration.
                 const key = `${String(Math.floor(luxon.DateTime.fromISO(act.start_date, { zone: "utc" }).toSeconds()))}|${cleanActivityType(act.activity_type)}|${act.duration_minutes}`;
                 duplicateSet.add(key);
                 chrome.storage.local.set({ uploadedIDs: Array.from(duplicateSet) });

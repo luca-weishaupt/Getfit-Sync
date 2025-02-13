@@ -24,8 +24,9 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.15);
             width: 600px; /* Increased width */
             padding: 40px;
+            border-radius: 8px;
+            box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
         }
-        /* Header */
         h2 {
             text-align: center;
             margin-bottom: 20px;
@@ -42,20 +43,16 @@
             color: #00796b;
             font-weight: 500;
         }
-        .form-group input {
+        input[type="text"] {
             width: 100%;
-            padding: 10px 14px;
+            padding: 10px;
             font-size: 1rem;
             border: 1px solid #b2dfdb;
             border-radius: 8px;
             outline: none;
-            transition: border-color 0.2s;
+            box-shadow: 0 0 4px rgba(0,123,255,0.5);
         }
-        .form-group input:focus {
-            border-color: #00796b;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        /* Read-only fields styling */
+                /* Read-only fields styling */
         .form-group input[readonly] {
             background: #f1f1f1;
             color: #555;
@@ -72,31 +69,54 @@
             font-size: 0.9rem;
             color: #004d40;
         }
-        /* Save Button */
-        button {
-            width: 100%;
-            padding: 12px;
+        .radio-group {
+            display: flex;
+            align-items: center; /* ensures vertical centering */
+            gap: 10px; /* slightly reduced gap */
+        }
+        .radio-group input[type="radio"] {
+            vertical-align: middle; /* aligns radio buttons with label text */
+            margin-top: 0;
+        }
+        .radio-group label {
+            margin: 0; /* remove extra margins if any */
+        }
+        .button {
             background: linear-gradient(45deg, #00796b, #004d40);
             color: #fff;
             border: none;
-            border-radius: 8px;
+            border-radius: 4px;
+            padding: 12px;
+            width: 100%;
             font-size: 1rem;
             cursor: pointer;
-            transition: background 0.2s, transform 0.2s;
+            transition: background 0.2s;
         }
-        button:hover {
-            transform: translateY(-2px);
+        .button:hover {
             background: linear-gradient(45deg, #005a50, #003d33);
         }
-        /* Status message */
+        .help-icon {
+            font-size: 1rem;
+            color: #00796b;
+            cursor: pointer;
+            margin-left: 8px;
+        }
+        .help-message {
+            display: none;
+            font-size: 0.9rem;
+            color: #555;
+            margin-top: 8px;
+            background: #e9ecef;
+            padding: 8px;
+            border-radius: 4px;
+        }
         #status {
-            margin-top: 15px;
-            background: #e0f2f1;
-            border-left: 4px solid #00796b;
+            margin-top: 20px;
             padding: 12px;
-            border-radius: 6px;
-            font-size: 0.95rem;
-            color: #004d40;
+            background: #f1f3f5;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            color: #495057;
         }
     </style>
 </head>
@@ -115,6 +135,22 @@
             <label for="clientSecret">Strava Client Secret</label>
             <input type="text" id="clientSecret" placeholder="Enter your Strava Client Secret">
         </div>
+        <!-- New Sync Type with radio buttons and help -->
+        <div class="form-group">
+            <label>
+                Sync Time Type 
+                <span id="syncHelpIcon" class="help-icon">&#9432;</span>
+            </label>
+            <div class="radio-group">
+                <input type="radio" id="movingTime" name="syncType" value="moving" checked>
+                <label for="movingTime">Moving Time</label>
+                <input type="radio" id="totalTime" name="syncType" value="total">
+                <label for="totalTime">Total Time</label>
+            </div>
+            <div id="syncHelpMessage" class="help-message">
+                <em>Moving Time counts only active movement while Total Time includes idle periods.</em>
+            </div>
+        </div>
         <div class="form-group">
             <label for="redirectUri">Strava Redirect URI</label>
             <input type="text" id="redirectUri" readonly>
@@ -123,7 +159,7 @@
             <label for="redirectDomain">Authorization Callback Domain</label>
             <input type="text" id="redirectDomain" readonly>
         </div>
-        <button id="saveButton">Save Configuration</button>
+        <button id="saveButton" class="button">Save Configuration</button>
         <div id="status"></div>
     </div>
     <script src="options.js"></script>
