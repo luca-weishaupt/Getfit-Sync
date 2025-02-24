@@ -99,6 +99,7 @@ function computeWeek(startDateISO) {
     const diffDays = dtEastern.diff(BASE_DATE_EASTERN, "days").days;
     return Math.floor(diffDays / 7) + 1;
 }
+
 function cleanActivityType(activityTypeStr) {
     if (activityTypeStr.startsWith("root=")) {
         return activityTypeStr.slice(6, -1).toLowerCase();
@@ -133,8 +134,15 @@ async function getUserParametersFromGetfit() {
 async function fetchStravaActivities(tokenData, syncType) {
     const token = tokenData.access_token;
     const todayUtc = luxon.DateTime.utc();
-    const mostRecentMonday = todayUtc.minus({ days: todayUtc.weekday - 1 }).startOf("day");
-    const url = `https://www.strava.com/api/v3/athlete/activities?after=${Math.floor(mostRecentMonday.toSeconds())}`;
+    const weekday = todayUtc.weekday; // Monday = 1 ... Sunday = 7
+    let cutoff;
+    if (weekday === 1) { // Monday edge case: use last Monday
+        cutoff = todayUtc.minus({ days: 7 }).startOf("day");
+    } else {
+        cutoff = todayUtc.minus({ days: weekday - 1 }).startOf("day");
+    }
+    const after = Math.floor(cutoff.toSeconds());
+    const url = `https://www.strava.com/api/v3/athlete/activities?after=${after}`;
     const response = await fetch(url, {
         headers: { "Authorization": `Bearer ${token}` },
         cache: "no-cache"
